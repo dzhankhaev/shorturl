@@ -1,0 +1,35 @@
+version: '3.9'
+services:
+  backend:
+    build: backend
+    image: d/shorturl-backend:v1
+    restart: always
+    command: ["./wait-for.sh", "db_address:${DB_PORT}", "--", "java", "-jar", "backend-1.0.jar"]
+    ports:
+      - ${BACKEND_PORT}:8080
+    environment:
+      DB_PORT: ${DB_PORT}
+      DB_ADDRESS: db_address
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      - db_address
+
+  flyway:
+    image: flyway/flyway:8.0.0-alpine
+    command: -url=jdbc:postgresql://db_address:${DB_PORT}/${POSTGRES_DB} -schemas=public -user=${POSTGRES_USER} -password=${POSTGRES_PASSWORD} -connectRetries=30 migrate
+    volumes:
+      - ./db_migration/scripts:/flyway/sql
+    depends_on:
+      - db_address
+
+  db_address:
+    image: library/postgres:13-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+        - ${DB_PORT}:5432

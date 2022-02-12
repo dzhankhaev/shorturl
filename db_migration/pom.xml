@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+        <parent>
+            <groupId>shorturl</groupId>
+            <artifactId>shorturl</artifactId>
+            <version>1.0</version>
+        </parent>
+    <groupId>db_migration</groupId>
+    <artifactId>db_migration</artifactId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>8.0.0</version>
+                <configuration>
+                        <user>${POSTGRES_USER}</user>
+                        <password>${POSTGRES_PASSWORD}</password>
+                        <url>jdbc:postgresql://${DB_ADDRESS}:${DB_PORT}/${POSTGRES_DB}</url>
+                        <schemas>
+                            <schema>shorturl</schema>
+                        </schemas>
+                        <locations>filesystem:scripts</locations>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>42.3.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
