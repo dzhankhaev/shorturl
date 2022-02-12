@@ -26,6 +26,7 @@ $ docker-compose up
 | POSTGRES_DB | Название базы данных |
 | DB_PORT | Порт для доступа к базе данных |
 | BACKEND_PORT | Порт для доступа к бекенду |
+
 Узнать ip адрес контейнера
 ```sh
 $ docker ps -a
@@ -57,6 +58,7 @@ $ docker-compose up flyway
 $ docker-compose up --detach --build
 ```
 При запуске бекенда и миграции вне контейнера необходимо определить переменные среды в файлах db_migration/pom.xml и backend/src/main/resources/application.properties
+
 Flyway также доступен напрямую через maven плагин:
 ```sh
 $ mvn -pl db_migration flyway:migrate
