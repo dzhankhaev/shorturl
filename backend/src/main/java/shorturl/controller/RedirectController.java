@@ -11,15 +11,18 @@ import org.springframework.web.servlet.ModelAndView;
 import shorturl.entity.UrlInfo;
 import shorturl.service.UrlsManagerService;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 @Controller
 @RequestMapping("/")
 public class RedirectController {
 	@Autowired
-	UrlsManagerService urlsManagerService;
+	private UrlsManagerService urlsManagerService;
 
 	@GetMapping("/{shortUrl}")
-	public ModelAndView getFullUrl(ModelMap model, @PathVariable String shortUrl) {
+	public void getFullUrl(HttpServletResponse response, @PathVariable String shortUrl) throws IOException {
 		String fullUrl = urlsManagerService.getFullUrl(shortUrl);
-		return fullUrl != null ? new ModelAndView("redirect:" + fullUrl, model) : null;
+		response.sendRedirect(fullUrl);
 	}
 }

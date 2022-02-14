@@ -7,19 +7,38 @@ import shorturl.repository.UrlInfoRepository;
 
 import java.sql.Timestamp;
 import java.util.Random;
-import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 @Service
 public class UrlsManagerService {
 	@Autowired
-	UrlInfoRepository urlInfoRepository;
+	private UrlInfoRepository urlInfoRepository;
 
-	public String generateShortUrl(String fullUrl) {
+	public boolean validateUrl(String fullUrl) {
+		String regex = fullUrl.contains("://") ? "^(https|http)://[-a-zA-Z0-9]*\\.[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*"
+				: "^[-a-zA-Z0-9]*\\.[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*";
+		try {
+			Pattern pattern = Pattern.compile(regex);
+			Matcher matcher = pattern.matcher(fullUrl);
+			return matcher.matches();
+		} catch (PatternSyntaxException e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
+	}
+	private String generateShortUrl() {
 		Random random = new Random();
-		String shortUrl = random.ints('a', 'z' + 1)
+		return random.ints('a', 'z' + 1)
 				.limit(5)	//длина
 				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
 				.toString();
+	}
+	public String getShortUrl(String fullUrl) {
+		if (!validateUrl(fullUrl))
+			return null;
+		String shortUrl = generateShortUrl();
 		Timestamp time = new Timestamp(System.currentTimeMillis());
 		urlInfoRepository.save(new UrlInfo(shortUrl, fullUrl, time, time, 0, 0));
 		return shortUrl;

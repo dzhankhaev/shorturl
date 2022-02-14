@@ -41,7 +41,7 @@ IP адреса сервисов должны соответствовать м�
 Взаимодействие с API бекенда:
 - Сгенерировать короткую ссылку
 ```sh
-$ curl -X POST "http://ip:port/api/url/generate_short_url?full_url=https://www.youtube.com"
+$ curl -X POST "http://ip:port/api/url/get-short-url?fullUrl=https://www.youtube.com"
 vbply
 ```
 - Перейти по короткой ссылке
